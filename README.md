@@ -186,6 +186,12 @@ Force background removal even if the image already has an alpha channel:
 python z3v_official.py --remove-bg --force-remove
 ```
 
+Delay (sec):
+
+```bash
+python z3v_official.py --delay 10
+```
+
 > For backward compatibility, `--rimuovi-sfondo` (italian) is also supported as an alias.
 
 if you have compatibility issues or errors, and want to make sure you're using the env you created, use the full path:
