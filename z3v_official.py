@@ -12,12 +12,17 @@ import os
 import sys
 import types
 import argparse
+
+import gc
+import time
+import torch
+
 from pathlib import Path
 
 # -----------------------------
 # SETTINGS YOU MAY WANT TO EDIT
 # -----------------------------
-MODEL_PATH = "/path/to/hy3d/models/Hunyuan3D-2.1"  # folder containing hunyuan3d-dit-v2-1 etc.
+MODEL_PATH = "/home/theboss/hy3d/models/Hunyuan3D-2.1"  # folder containing hunyuan3d-dit-v2-1 etc.
 MAX_NUM_VIEW = 8        # typical range: 6..12 (higher => more VRAM)
 RESOLUTION = 512        # typical: 512 or 768 (higher => more VRAM)
 
@@ -163,6 +168,13 @@ def main():
         default=None,
         help="Process a single image file instead of scanning ./input/. Example: --path /abs/or/rel/file.png"
     )
+    # delay
+    parser.add_argument(
+        "--delay",
+        type=float,
+        default=5.0,
+        help="Delay in seconds between images to reduce CUDA/VRAM pressure in batch mode."
+    )
 
     args = parser.parse_args()
 
@@ -261,6 +273,24 @@ def main():
             print(f"[ERROR] Failed on {img_path.name}: {e}")
         finally:
             os.chdir(old_cwd)
+
+            # Free per-image objects as much as possible before the next generation
+            for var_name in ["image", "mesh", "input_for_model"]:
+                if var_name in locals():
+                    try:
+                        del locals()[var_name]
+                    except Exception:
+                        pass
+
+            gc.collect()
+
+            if torch.cuda.is_available():
+                torch.cuda.synchronize()
+                torch.cuda.empty_cache()
+                torch.cuda.ipc_collect()
+
+            # Small delay to let CUDA/driver settle before the next item
+            time.sleep(args.delay)
 
     print("\n[DONE] Completed.")
     print(f"[INFO] Outputs in: {output_dir}")
