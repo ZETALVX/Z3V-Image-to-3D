@@ -187,7 +187,7 @@ python z3v_official.py --remove-bg --force-remove
 ```
 > For backward compatibility, `--rimuovi-sfondo` (italian) is also supported as an alias.
 
-
+### Delay
 Delay (sec):
 
 ```bash
