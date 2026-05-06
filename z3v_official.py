@@ -256,19 +256,6 @@ def main():
                 output_mesh_path=str(out_glb_maybe),
             )
 
-            # Fix wrong extension: if it's OBJ text saved as .glb, rename to .obj
-            if out_glb_maybe.exists():
-                if is_valid_glb(out_glb_maybe):
-                    print(f"[OK] Textured GLB exported: {out_glb_maybe.name}")
-                elif looks_like_obj_text(out_glb_maybe):
-                    out_obj = per_item_dir / f"{stem}_textured.obj"
-                    out_glb_maybe.replace(out_obj)
-                    print(f"[FIX] Output was OBJ text, renamed to: {out_obj.name}")
-                else:
-                    print(f"[WARN] Output exists but is not valid GLB and doesn't look like OBJ: {out_glb_maybe.name}")
-            else:
-                print("[WARN] output_mesh_path not found after paint. Check logs in this folder.")
-
         except Exception as e:
             print(f"[ERROR] Failed on {img_path.name}: {e}")
         finally:
