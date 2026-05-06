@@ -213,10 +213,6 @@ output/
    └─ image_name_bgremoved.png  (if enabled)
 ```
 
-### Note
-The paint pipeline may output an **OBJ file with a `.glb` extension**.  
-The script automatically detects this and renames the file correctly.
-
 ---
 
 ## Configuration
