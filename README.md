@@ -52,7 +52,7 @@ hy3d/
 │  │     └─ RealESRGAN_x4plus.pth
 │  ├─ input/
 │  ├─ output/
-│  └─ z3v_official.py.py       #script
+│  └─ z3v_official.py       #script
 ```
 
 ---
